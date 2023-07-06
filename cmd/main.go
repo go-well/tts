@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	file, err := os.Create("out.wav")
+	file, err := os.Create("out.mp3")
 	if err != nil {
 		log.Fatal(err)
 	}

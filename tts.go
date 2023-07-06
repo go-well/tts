@@ -24,8 +24,7 @@ func Generate(text string, writer io.Writer) error {
 	var files []string
 	for _, p := range pins {
 		fn := path.Join(VOICE, p+".wav")
-		files = append(files, "-i")
-		files = append(files, fn)
+		files = append(files, "-i", fn)
 	}
 	files = append(files, "-filter_complex")
 
@@ -37,15 +36,17 @@ func Generate(text string, writer io.Writer) error {
 	files = append(files, filter)
 
 	//files = append(files, " -map '[out]' test.wav")
-	files = append(files, "-map")
-	files = append(files, "[out]")
-	files = append(files, "test.wav")
+	files = append(files, "-map", "[out]")
+	files = append(files, "-f", "mp3") //输出MP3
+	files = append(files, "pipe:1")    //标准输出
+	files = append(files, "-y")
 
 	fmt.Println(files)
 
 	//c := strings.Join(files, " ")
 	cmd := exec.Command("./ffmpeg", files...)
-	cmd.Stdout = os.Stdout
+	cmd.Stdout = writer
+	//cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
 }
